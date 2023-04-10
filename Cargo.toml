@@ -1,0 +1,17 @@
+[package]
+name = "rust-react-chat"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix = "0.13.0"
+actix-files = "0.6.2"
+actix-web = "4.2.1"
+actix-web-actors = "4.1.0"
+rand = "0.8.5"
+serde = {version = "1.0.147", features = ["derive"]}
+serde_json = "1.0.88"
+diesel = { version = "2", features = ["sqlite", "r2d2"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = "0.4.23"
+actix-cors = "0.6.4"
