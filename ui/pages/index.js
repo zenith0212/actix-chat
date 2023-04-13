@@ -40,6 +40,10 @@ export default function Home() {
         }
         case "TEXT": {
           handleMessage(messageData.value[0], messageData.user_id);
+          var options = {
+            body: messageData.value[0]
+          };      
+          new Notification('New Message', options);
           return;
         }
       }
@@ -107,7 +111,14 @@ export default function Home() {
     setAuthUser(false);
   }
 
-  useEffect(() => setShowLogIn(!auth), [auth])
+  useEffect(() => {
+    setShowLogIn(!auth);
+    if (!("Notification" in window)) {
+      console.log("Browser does not support desktop notification");
+    } else {
+      Notification.requestPermission();
+    }
+  }, [auth])
 
   return (
     <div>
