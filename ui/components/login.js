@@ -2,7 +2,7 @@ import { useState } from "react";
 
 async function createAccount({ username, phone }) {
     try {
-        const url = "http://localhost:8080/users/create";
+        const url = "https://192.168.112.95:8080/users/create";
         let result = await fetch(url, {
             method: "POST",
             headers: {
@@ -18,7 +18,7 @@ async function createAccount({ username, phone }) {
 
 async function signIn({ phone }) {
     try {
-        const url = "http://localhost:8080/users/phone/" + phone;
+        const url = "https://192.168.112.95:8080/users/phone/" + phone;
         let result = await fetch(url);
         return result.json();
     } catch (e) {

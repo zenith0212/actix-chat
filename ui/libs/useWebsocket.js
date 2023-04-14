@@ -5,7 +5,7 @@ export default function useWebsocket(onMessage) {
 
     useEffect(() => {
         if (ws.current !== null) return;
-        const wsUri = 'ws://localhost:8080/ws';
+        const wsUri = 'wss://192.168.112.95:8080/ws';
         ws.current = new WebSocket(wsUri);
         ws.current.onopen = () => console.log("ws opened");
         ws.current.onclose = () => console.log("ws closed");

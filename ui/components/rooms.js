@@ -3,7 +3,7 @@ import Avatar from "./avatar";
 
 async function getRooms() {
     try {
-        const url = "http://localhost:8080/rooms";
+        const url = "https://192.168.112.95:8080/rooms";
         let result = await fetch(url);
         return result.json();
     } catch (e) {

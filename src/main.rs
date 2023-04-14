@@ -5,6 +5,7 @@ use actix::*;
 use actix_cors::Cors;
 use actix_files::Files;
 use actix_web::{web, http, App, HttpServer};
+use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 
 use diesel::{
     prelude::*,
@@ -22,17 +23,24 @@ mod session;
 async fn main() -> std::io::Result<()> {
     let server = server::ChatServer::new().start();
 
+    // load TLS keys
+    let mut builder = SslAcceptor::mozilla_intermediate(SslMethod::tls()).unwrap();
+    builder
+        .set_private_key_file("key.pem", SslFiletype::PEM)
+        .unwrap();
+    builder.set_certificate_chain_file("cert.pem").unwrap();
+
     let conn_spec = "chat.db";
     let manager = ConnectionManager::<SqliteConnection>::new(conn_spec);
     let pool = r2d2::Pool::builder().build(manager).expect("Failed to create pool.");
 
-    let server_addr = "127.0.0.1";
+    let server_addr = "0.0.0.0";
     let server_port = 8080;
 
     let app = HttpServer::new(move || {
         let cors = Cors::default()
-            .allowed_origin("http://localhost:3000")
-            .allowed_origin("http://localhost:8080")
+            .allowed_origin("https://192.168.112.95:3000")
+            .allowed_origin("https://192.168.112.95:8080")
             .allowed_methods(vec!["GET", "POST"])
             .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
             .allowed_header(http::header::CONTENT_TYPE)
@@ -52,9 +60,9 @@ async fn main() -> std::io::Result<()> {
             .service(Files::new("/", "./static"))
     })
     .workers(2)
-    .bind((server_addr, server_port))?
+    .bind_openssl((server_addr, server_port), builder)?
     .run();
 
-    println!("Server running at http://{server_addr}:{server_port}/");
+    println!("Server running at https://{server_addr}:{server_port}/");
     app.await
 }
