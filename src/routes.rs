@@ -139,17 +139,17 @@ pub async fn get_user_by_phone(
     }
 }
 
-#[get("/rooms")]
+#[get("/rooms/{uid}")]
 pub async fn get_rooms(
     pool: web::Data<DbPool>,
+    uid: web::Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
     let rooms = web::block(move || {
         let mut conn = pool.get()?;
-        db::get_all_rooms(&mut conn)
+        db::get_all_rooms(&mut conn, uid.to_owned())
     })
     .await?
     .map_err(actix_web::error::ErrorInternalServerError)?;
-
     if !rooms.is_empty() {
         Ok(HttpResponse::Ok().json(rooms))
     } else {

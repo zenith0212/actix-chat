@@ -6,7 +6,7 @@ use std::{
 };
 use uuid::Uuid;
 
-use crate::models::{Conversation, NewConversation, Room, RoomResponse, User};
+use crate::{models::{Conversation, NewConversation, Room, RoomResponse, User}, schema::{rooms, users}};
 
 type DbError = Box<dyn std::error::Error + Send + Sync>;
 
@@ -49,11 +49,11 @@ pub fn find_user_by_phone(
     Ok(user)
 }
 
-pub fn get_all_rooms(conn: &mut SqliteConnection) -> Result<Vec<RoomResponse>, DbError> {
-    use crate::schema::rooms;
-    use crate::schema::users;
+pub fn get_all_rooms(conn: &mut SqliteConnection, uid: Uuid,) -> Result<Vec<RoomResponse>, DbError> {
+    // use crate::schema::users;
+    // use crate::schema::rooms;
 
-    let rooms_data: Vec<Room> = rooms::table.get_results(conn)?;
+    let rooms_data: Vec<Room> = rooms::table.filter(rooms::participant_ids.like(uid.to_string())).get_results(conn)?;
     let mut ids = HashSet::new();
     let mut rooms_map = HashMap::new();
     let data = rooms_data.to_vec();
@@ -99,6 +99,7 @@ fn iso_date() -> String {
 
 pub fn insert_new_user(conn: &mut SqliteConnection, nm: &str, pn: &str) -> Result<User, DbError> {
     use crate::schema::users::dsl::*;
+    use crate::schema::rooms::dsl::*;
 
     let new_user = User {
         id: Uuid::new_v4().to_string(),
@@ -106,6 +107,18 @@ pub fn insert_new_user(conn: &mut SqliteConnection, nm: &str, pn: &str) -> Resul
         phone: pn.to_owned(),
         created_at: iso_date(),
     };
+    let rooms_data: Vec<User> = users.get_results(conn)?;
+    for i in rooms_data {
+        let new_room = Room {
+            id: Uuid::new_v4().to_string(),
+            name: nm.to_owned(),
+            last_message: "hello".to_string(),
+            participant_ids: new_user.id.clone() + "," + &i.id,
+            created_at: iso_date(),
+        };
+        println!("{}, {}, {}", new_room.name, new_room.participant_ids, new_room.created_at);
+        diesel::insert_into(rooms).values(&new_room).execute(conn)?;
+    }
 
     diesel::insert_into(users).values(&new_user).execute(conn)?;
 

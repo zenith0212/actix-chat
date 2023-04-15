@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Avatar from "./avatar";
 
-async function getRooms() {
+async function getRooms(user_id) {
     try {
-        const url = "https://192.168.112.95:8080/rooms";
+        const url = `https://192.168.112.95:8080/roomsconversations/${user_id}`;
         let result = await fetch(url);
         return result.json();
     } catch (e) {
@@ -47,7 +47,7 @@ export default function ChatList({ onChatChange, userId }) {
 
     useEffect(() => {
         setLoading(true)
-        getRooms()
+        getRooms(userId)
             .then((data) => {
                 setData(data)
                 setLoading(false)
