@@ -3,7 +3,7 @@ import Avatar from "./avatar";
 
 async function getRooms(user_id) {
     try {
-        const url = `https://192.168.112.95:8080/roomsconversations/${user_id}`;
+        const url = `https://192.168.112.95:8080/rooms/${user_id}`;
         let result = await fetch(url);
         return result.json();
     } catch (e) {
@@ -44,9 +44,9 @@ export default function ChatList({ onChatChange, userId }) {
     const [data, setData] = useState([])
     const [isLoading, setLoading] = useState(false)
     const [selectedItem, setSelectedItem] = useState(-1);
-
     useEffect(() => {
-        setLoading(true)
+        setLoading(true);
+        console.log(userId);
         getRooms(userId)
             .then((data) => {
                 setData(data)
