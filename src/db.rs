@@ -52,8 +52,8 @@ pub fn find_user_by_phone(
 pub fn get_all_rooms(conn: &mut SqliteConnection, uid: Uuid,) -> Result<Vec<RoomResponse>, DbError> {
     // use crate::schema::users;
     // use crate::schema::rooms;
-
-    let rooms_data: Vec<Room> = rooms::table.filter(rooms::participant_ids.like(uid.to_string())).get_results(conn)?;
+    println!("{}", "%".to_string() + &uid.to_string()+"%");
+    let rooms_data: Vec<Room> = rooms::table.filter(rooms::participant_ids.like("%".to_string() + &uid.to_string() + "%")).get_results(conn)?;
     let mut ids = HashSet::new();
     let mut rooms_map = HashMap::new();
     let data = rooms_data.to_vec();

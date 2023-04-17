@@ -47,12 +47,14 @@ export default function ChatList({ onChatChange, userId }) {
     useEffect(() => {
         setLoading(true);
         console.log(userId);
-        getRooms(userId)
-            .then((data) => {
-                setData(data)
-                setLoading(false)
-            })
-    }, [])
+        if (userId !== undefined) {
+            getRooms(userId)
+                .then((data) => {
+                    setData(data)
+                    setLoading(false)
+                })
+        }
+    }, [userId])
 
     const onSelectedChat = (idx, item) => {
         setSelectedItem(idx)
