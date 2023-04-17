@@ -39,7 +39,7 @@ pub async fn chat_server(
             db_pool: pool,
         },
         &req,
-        stream
+        stream,
     )
 }
 

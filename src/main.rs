@@ -4,7 +4,7 @@ extern crate diesel;
 use actix::*;
 use actix_cors::Cors;
 use actix_files::Files;
-use actix_web::{web, http, App, HttpServer};
+use actix_web::{http, web, App, HttpServer};
 use openssl::ssl::{SslAcceptor, SslFiletype, SslMethod};
 
 use diesel::{
@@ -32,7 +32,9 @@ async fn main() -> std::io::Result<()> {
 
     let conn_spec = "chat.db";
     let manager = ConnectionManager::<SqliteConnection>::new(conn_spec);
-    let pool = r2d2::Pool::builder().build(manager).expect("Failed to create pool.");
+    let pool = r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create pool.");
 
     let server_addr = "0.0.0.0";
     let server_port = 8080;
