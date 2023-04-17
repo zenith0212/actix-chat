@@ -6,7 +6,7 @@
 
 ## How to install
 * git clone https://github.com/zenith1994/actix-chat
-* cd actix-chat/ui && npm build
+* cd actix-chat/ui && npm run build
 * cd ../ && cargo run
 
 ## Todo list
