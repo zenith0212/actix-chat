@@ -72,7 +72,9 @@ export default function Home() {
       room_id: room.id,
       user_id: auth.id
     }
-    sendMessage(JSON.stringify(data))
+    setTimeout(() => {
+      sendMessage(JSON.stringify(data))
+    }, 2000);
   }
 
   const submitMessage = (e) => {
@@ -150,8 +152,10 @@ export default function Home() {
             <div className='w-full'>
               <form onSubmit={submitMessage} className='flex gap-2 items-center rounded-full border border-violet-500 bg-violet-200 p-1 m-2'>
                 <input
-                  onBlur={onFocusChange}
-                  onFocus={updateFocus}
+                  // onBlur={onFocusChange}
+                  onKeyUp={onFocusChange}
+                  onKeyPress={updateFocus}
+                  // onChange={updateFocus}
                   name="message"
                   className='p-2 placeholder-gray-600 text-sm w-full rounded-full bg-violet-200 focus:outline-none'
                   placeholder='Type your message here...' />
