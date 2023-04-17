@@ -4,13 +4,9 @@
 @tailwind utilities;
 
 .dotsContainer {
-    width: 60px;
-    height: 25px;
-    background: #f2f2f2;
-    border-radius: 25px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-end;
   }
   
   #dot1,
