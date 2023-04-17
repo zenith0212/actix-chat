@@ -15,6 +15,8 @@ export default function Home() {
   const [auth, setAuthUser] = useLocalStorage("user", false);
   const [isLoading, messages, setMessages, fetchConversations] = useConversations("");
 
+  let currentDateTime = Date().toLocaleString()
+
   const handleTyping = (mode) => {
     if (mode === "IN") {
       setIsTyping(true)
@@ -142,13 +144,14 @@ export default function Home() {
                 <Avatar color='rgb(245 158 11)'>{room.users.get_target_user(auth.id)}</Avatar>
                 <div>
                   <p className='font-semibold text-gray-600 text-base'>{room.users.get_target_user(auth.id)}</p>
-                  <div className='text-xs text-gray-400'>{isTyping ? "Typing..." : "10:15 AM"}</div>
+                  <div className='text-xs text-gray-400'> {currentDateTime}</div>
                 </div>
               </div>
               <hr className='bg-[#F0EEF5]' />
             </div>
             {(isLoading && room.id) && <p className="px-4 text-slate-500">Loading conversation...</p>}
             <Conversation data={messages} auth={auth} users={room.users} />
+            <div className='text-xs text-gray-400'> {isTyping ? "Typing..." : ""}</div>
             <div className='w-full'>
               <form onSubmit={submitMessage} className='flex gap-2 items-center rounded-full border border-violet-500 bg-violet-200 p-1 m-2'>
                 <input
