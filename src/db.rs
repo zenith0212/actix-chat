@@ -6,7 +6,10 @@ use std::{
 };
 use uuid::Uuid;
 
-use crate::{models::{Conversation, NewConversation, Room, RoomResponse, User}, schema::{rooms, users}};
+use crate::{
+    models::{Conversation, NewConversation, Room, RoomResponse, User},
+    schema::{rooms, users},
+};
 
 type DbError = Box<dyn std::error::Error + Send + Sync>;
 
@@ -49,8 +52,10 @@ pub fn find_user_by_phone(
     Ok(user)
 }
 
-pub fn get_all_rooms(conn: &mut SqliteConnection, uid: Uuid,) -> Result<Vec<RoomResponse>, DbError> {
-    let rooms_data: Vec<Room> = rooms::table.filter(rooms::participant_ids.like("%".to_string() + &uid.to_string() + "%")).get_results(conn)?;
+pub fn get_all_rooms(conn: &mut SqliteConnection, uid: Uuid) -> Result<Vec<RoomResponse>, DbError> {
+    let rooms_data: Vec<Room> = rooms::table
+        .filter(rooms::participant_ids.like("%".to_string() + &uid.to_string() + "%"))
+        .get_results(conn)?;
     let mut ids = HashSet::new();
     let mut rooms_map = HashMap::new();
     let data = rooms_data.to_vec();
@@ -76,15 +81,18 @@ pub fn get_all_rooms(conn: &mut SqliteConnection, uid: Uuid,) -> Result<Vec<Room
             .map(|item| (item.id.to_string(), item)),
     );
 
-    let response_rooms = rooms_data.into_iter().map(|room| {
-        let users = rooms_map
-            .get(&room.id.to_string())
-            .unwrap()
-            .into_iter()
-            .map(|id| users_map.get(id.to_owned()).unwrap().clone())
-            .collect::<Vec<_>>();
-        return RoomResponse{ room, users };
-    }).collect::<Vec<_>>();
+    let response_rooms = rooms_data
+        .into_iter()
+        .map(|room| {
+            let users = rooms_map
+                .get(&room.id.to_string())
+                .unwrap()
+                .into_iter()
+                .map(|id| users_map.get(id.to_owned()).unwrap().clone())
+                .collect::<Vec<_>>();
+            return RoomResponse { room, users };
+        })
+        .collect::<Vec<_>>();
     Ok(response_rooms)
 }
 
@@ -95,8 +103,8 @@ fn iso_date() -> String {
 }
 
 pub fn insert_new_user(conn: &mut SqliteConnection, nm: &str, pn: &str) -> Result<User, DbError> {
-    use crate::schema::users::dsl::*;
     use crate::schema::rooms::dsl::*;
+    use crate::schema::users::dsl::*;
 
     let new_user = User {
         id: Uuid::new_v4().to_string(),
@@ -113,7 +121,10 @@ pub fn insert_new_user(conn: &mut SqliteConnection, nm: &str, pn: &str) -> Resul
             participant_ids: new_user.id.clone() + "," + &i.id,
             created_at: iso_date(),
         };
-        println!("{}, {}, {}", new_room.name, new_room.participant_ids, new_room.created_at);
+        println!(
+            "{}, {}, {}",
+            new_room.name, new_room.participant_ids, new_room.created_at
+        );
         diesel::insert_into(rooms).values(&new_room).execute(conn)?;
     }
 
