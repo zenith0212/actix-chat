@@ -152,11 +152,13 @@ export default function Home() {
             {(isLoading && room.id) && <p className="px-4 text-slate-500">Loading conversation...</p>}
             <Conversation data={messages} auth={auth} users={room.users} />
             {isTyping?
-              <div className="dotsContainer">
+              <span className="dotsContainer">
                 <span id="dot1"></span>
                 <span id="dot2"></span>
                 <span id="dot3"></span>
-              </div> : null
+              </span> 
+              : 
+              <div></div>
             }
             <div className='w-full'>
               <form onSubmit={submitMessage} className='flex gap-2 items-center rounded-full border border-violet-500 bg-violet-200 p-1 m-2'>
