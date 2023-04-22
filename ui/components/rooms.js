@@ -64,7 +64,9 @@ export default function ChatList({ onChatChange, userId }) {
         });
         const users = {
             get: (id) => {
-                return mapUsers.get(id).username;
+                if(mapUsers.get(id) !== undefined) {
+                    return mapUsers.get(id).username;
+                }
             },
             get_target_user: (id) => {
                 return item.users.filter(el => el.id != id).map(el => el.username).join("")
